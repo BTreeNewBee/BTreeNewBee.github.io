@@ -21,18 +21,20 @@
     
     <meta name="description" content="iguigui的博客">
     <meta name="description" content="iguigui的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="iguigui的博客">
-<meta property="og:url" content="https://btreenewbee.github.io/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编笔记基本版">
+<meta property="og:url" content="https://btreenewbee.github.io/2021/09/04/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="iguigui的博客">
 <meta property="og:description" content="iguigui的博客">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-04T10:51:18.000Z">
+<meta property="article:modified_time" content="2021-09-04T10:51:18.715Z">
 <meta property="article:author" content="我的龟龟">
 <meta name="twitter:card" content="summary">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     
-    <title>iGuigui</title>
+    <title>汇编笔记基本版 · iGuigui</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -87,6 +89,8 @@
 
     <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
@@ -211,14 +215,23 @@
 <meta name="generator" content="Hexo 5.3.0"></head>
 
     
-        <body class="home-body">
+        <body class="post-body">
     
     
-<header class="header index-header">
+<header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >龟龟的灵感中心</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">汇编笔记基本版</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>龟龟的灵感中心</a>
 </header>
@@ -237,17 +250,17 @@ height:50vh;
     <!-- 主页  -->
     
     
-    <!-- 文章页  -->
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            龟龟的灵感中心
-            <!-- 文章页  -->
+            汇编笔记基本版
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
@@ -255,12 +268,43 @@ height:50vh;
             <!-- 主页副标题  -->
             
             
-                多写点少写点多少写点
-            
-            <!-- 文章页  -->
+            <!-- 404 -->
             
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">0</span>阅读时长: <span class="post-count reading-time">1 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/09/04</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -361,173 +405,54 @@ height:50vh;
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2021/09/04/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/" >
-            
-                <span>汇编笔记基本版</span>
-        </a>
-        <div class="abstract-content">
-            
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/09/04</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
+            <main class="main post-page">
+    <article class="article-entry">
+        
     </article>
+    <!-- license  -->
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2021/03/24/%E5%86%99%E4%B8%AA%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/" >
-            
-                <span>写个测试文章</span>
-        </a>
-        <div class="abstract-content">
-            如何写一个排版优雅的文章？12345678910111213//这里是一个代码块    private fun reflushMarketInfo() &#123;        val url = &quot;https://fxhapi.feixiaohao.com/public/v1/ticker?limit=1000&quot;        val get = HttpUtil.get(url)        if (get == null) &#123;            return        &#125;        var sarray = Gson().fr...
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://btreenewbee.github.io">我的龟龟</a>
+            <p>原文链接：<a href="https://btreenewbee.github.io/2021/09/04/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/">https://btreenewbee.github.io/2021/09/04/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/</a>
+            <p>发表日期：<a href="https://btreenewbee.github.io/2021/09/04/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/">September 4th 2021, 6:51:18 pm</a>
+            <p>更新日期：<a href="https://btreenewbee.github.io/2021/09/04/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/">September 4th 2021, 6:51:18 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/03/24</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2021/01/08/%E6%88%91%E7%9A%84%E9%BE%9F%E9%BE%9F%E7%9A%84%E5%8D%9A%E5%AE%A2/" >
-            
-                <span>我的龟龟的博客</span>
-        </a>
-        <div class="abstract-content">
-            龟牌云开发的博客
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/01/08</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2021/01/08/hello-world/" >
-            
-                <span>Hello World</span>
-        </a>
-        <div class="abstract-content">
-            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;
-More info: Writing
-Run server1$ hexo s...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/01/08</span>
-            </div>
-            <!-- tags  -->
-            
-        </div>
-    </article>
     
     <!-- paginator  -->
-    
-</main>
-            <!-- profile -->
+    <ul class="post-paginator">
+        <li class="next">
             
-            <div class="profile">
-    <img class="profile-avatar" alt="avatar" src= /avatar/guigui.gif >
-    <div class="profile-name">iguigui</div>
-    
-    <div class="profile-signature">
-        要啥评论区
-    </div>
-    
-    
-    <div class="profile-social">
-        
-    
-        
+        </li>
+        <li class="previous">
             
-                <a href="mailto:atmzxl@163.com" class="iconfont-archer email" title=email ></a>
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2021/03/24/%E5%86%99%E4%B8%AA%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/" title= "写个测试文章">
+                    <div class="prevTitle">写个测试文章</div>
+                </a>
             
-        
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
     
-        
-            
-                <a href="//github.com/BTreeNewBee" class="iconfont-archer github" target="_blank" title=github></a>
-            
-        
     
-        
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
     
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
     
 
-    </div>
-    
-    
-    
-</div>
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
             
         </div>
         <footer class="footer footer-unloaded">
@@ -601,6 +526,24 @@ Run server1$ hexo s...
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -756,6 +699,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>
