@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="我的龟龟">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="我的龟龟">
+    
+    <meta name="keywords" content="iGuigui,iGuigui-blog">
+    
+    <meta name="description" content="iguigui的博客">
+    <meta name="description" content="HTTPS试图解决什么问题？HTTP作为使用最广泛的应用层协议，由于是全明文传输，可以随意被人截获、修改，存在巨大的安全隐患，为此就需要一种办法来确保安全通信。 这种方式就是在HTTP的基础上增加一层SSL（或称TLS）进行加强。 安全通信的基本特性 机密性。这个是最基础的对安全通信的理解，即应该有且仅有发送方和希望的接收方能够理解传输信息的内容。  完整性。信息在传输过程中应该未被改变，完整可靠">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTPS中的S意味着什么?">
+<meta property="og:url" content="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/index.html">
+<meta property="og:site_name" content="iguigui的博客">
+<meta property="og:description" content="HTTPS试图解决什么问题？HTTP作为使用最广泛的应用层协议，由于是全明文传输，可以随意被人截获、修改，存在巨大的安全隐患，为此就需要一种办法来确保安全通信。 这种方式就是在HTTP的基础上增加一层SSL（或称TLS）进行加强。 安全通信的基本特性 机密性。这个是最基础的对安全通信的理解，即应该有且仅有发送方和希望的接收方能够理解传输信息的内容。  完整性。信息在传输过程中应该未被改变，完整可靠">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/20160630151113124">
+<meta property="og:image" content="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/1200px-Avalanche_effect.svg.png">
+<meta property="og:image" content="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/news_2018101117.png">
+<meta property="og:image" content="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/news_2018101118.png">
+<meta property="article:published_time" content="2021-02-02T18:11:26.000Z">
+<meta property="article:modified_time" content="2022-02-11T15:44:50.745Z">
+<meta property="article:author" content="我的龟龟">
+<meta property="article:tag" content="SSL\TLS">
+<meta property="article:tag" content="HTTPS">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/20160630151113124">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>HTTPS中的S意味着什么? · iGuigui</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >龟龟的灵感中心</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">HTTPS中的S意味着什么?</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>龟龟的灵感中心</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            HTTPS中的S意味着什么?
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "SSL\TLS">SSL\TLS</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "HTTPS">HTTPS</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "计算机网络">计算机网络</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "密码学">密码学</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">3.8k</span>阅读时长: <span class="post-count reading-time">13 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/02/03</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h2 id="HTTPS试图解决什么问题？"><a href="#HTTPS试图解决什么问题？" class="headerlink" title="HTTPS试图解决什么问题？"></a>HTTPS试图解决什么问题？</h2><p>HTTP作为使用最广泛的应用层协议，由于是全明文传输，可以随意被人截获、修改，存在巨大的安全隐患，为此就需要一种办法来确保安全通信。</p>
+<p>这种方式就是在HTTP的基础上增加一层SSL（或称TLS）进行加强。</p>
+<h2 id="安全通信的基本特性"><a href="#安全通信的基本特性" class="headerlink" title="安全通信的基本特性"></a>安全通信的基本特性</h2><ul>
+<li><p>机密性。这个是最基础的对安全通信的理解，即应该有且仅有发送方和希望的接收方能够理解传输信息的内容。</p>
+</li>
+<li><p>完整性。信息在传输过程中应该未被改变，完整可靠。</p>
+</li>
+<li><p>端点鉴别。这一点可能比较难以理解，但是思考一下一种情况：现在你向网站发起请求，你如何判定你是向真正的网站在请求，而不是一个假网站？又或者是有一个人伪装成服务器在跟你通信，他又伪装成你去跟真正的服务器通信以此来窃取你的信息？服务器又如何肯定请求来自于真正的你？</p>
+</li>
+</ul>
+<p>这就是我们的需求分析环节，接下来我们将描述如何解决这些问题。</p>
+<h2 id="实现我们三个目标的核心：密码学"><a href="#实现我们三个目标的核心：密码学" class="headerlink" title="实现我们三个目标的核心：密码学"></a>实现我们三个目标的核心：密码学</h2><p>事实上HTTPS是完全是现代密码学的成果，我们不可能在不理解基本密码学的情况下理解HTTPS。</p>
+<h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>首先我们有一段希望发送的原始信息，这叫<strong>明文</strong>，我们使用<strong>加密算法</strong>将你的明文转换成一个无法理解的<strong>密文</strong>进行传输，接收方接收到以后，重新使用<strong>解密算法</strong>将密文转换成可理解的明文。</p>
+<p>看起来非常简单是不是？看上去我们只需要把加解密算法藏好就可以了？</p>
+<p>但是这里存在一个很明显的问题：HTTPS，或者说SSL/TLS是一个公开标准化的技术，每个人都可以随意使用，实现他，你用的加密方法别人也知道。（也正是开放开源才有了现代互联网的繁荣，只要遵循协议都可以加入互联网）</p>
+<p>既然加解密编码的方法是公开的，那么肯定就还有什么东西可以让别人知道方法也无法解密数据。这就是<strong>密钥</strong>，就好像现实生活中的锁的结构其实是公开的，大家买回家的都一样，但是钥匙是自己的。</p>
+<p>在进行了以上内容的铺垫以后，现在可以引出对称加密的概念了：<strong>通信双方均使用同样的密钥进行加解密，并且这个密钥是只有通信双方知道的</strong>。</p>
+<p>典型的对称加密算法有DES，3DES，AES等。</p>
+<hr>
+<p>这就是人类已经使用了两千多年的最经典的加密方式，不难看出来，这个体系的核心就是双方需要先约定好一个有且仅有双方知道的密钥，而约定这一步就需要进行通信。现实生活中我们可能会搞成线下碰个头之类的办法，为了防止窃听偷拍还要选择公共澡堂。</p>
+<p>但是在网络世界中，通信双方可能从未见过面，几乎不存在提前约定或者在非网络环境下通信的可能，这种情况下你要如何进行加密通信？<strong>没有共同的密钥就无法进行安全的对称加密通信，而不进行加密通信双方就无法安全地约定密钥，这不就成没有工作经验就找不到工作的死循环了么？</strong></p>
+<p>很明显我们需要一种更优雅的加密方式来跳出死循环。</p>
+<h3 id="Differ-Hellman密钥交换算法与公开密钥加密算法"><a href="#Differ-Hellman密钥交换算法与公开密钥加密算法" class="headerlink" title="Differ-Hellman密钥交换算法与公开密钥加密算法"></a>Differ-Hellman密钥交换算法与公开密钥加密算法</h3><p>如何实现在公开的不安全的网络中进行安全的信息交换传输？</p>
+<p>我们首先来看Differ-Hellman密钥交换算法。</p>
+<h4 id="Differ-Hellman密钥交换算法"><a href="#Differ-Hellman密钥交换算法" class="headerlink" title="Differ-Hellman密钥交换算法"></a>Differ-Hellman密钥交换算法</h4><p>此算法一般应用于<strong>在公开的不安全的网络中进行密钥协商交换，从而可以进行对称加密通信</strong>。</p>
+<p>计算过程如下：</p>
+<p><img src="/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/20160630151113124" alt="img"></p>
+<ol>
+<li>alice向bob传递三个参数：素数p，整数g，以及根据自己内部的隐藏参数a计算出来的A。</li>
+<li>bob根据接受到的三个参数，用自己随机选择的隐藏参数b计算返回B，同时这一步自己也算出来K。</li>
+<li>Alice接收B，计算得到K。</li>
+</ol>
+<p>以下是一个简单的计算过程：</p>
+<pre><code>1. 我们取素数p为97，整数g为5，隐藏参数a为36，隐藏参数b为58。
+2. Alice进行计算：A = 5 ^ 36 mod 97 = 50，则向Bob传递三个参数：p = 97，g = 5，A = 50。
+3. Bob进行计算：K = 50 ^ 58 mod 97 = 75，得到密钥75，B = 5 ^ 58 mod 97 = 44，回传给Alice。
+4. Alice进行计算：K = 44 ^ 36 mod 97 = 75，得到密钥75，交换完成。
+</code></pre>
+<p>以及一个我自己写的简单的代码例子</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/BTreeNewBee/MyTestProject/blob/master/src/main/java/iguigui/github/io/ssltls/Differ_Hellman.java">Differ-Hellman交换的简单Java例子</a></p>
+<p>在整个交换过程中，暴露出来的信息只有p = 97，g = 5，A = 50，B = 44，最终双方协商出来了密钥K = 75。</p>
+<p>在这种情况下，只知道四个公开参数，只有计算离散对数算出来隐藏参数a和b才能破解出真正的密钥k = 75。</p>
+<p>实际应用中一般会选择极大的g和p（几百位以上）防止暴力破解。</p>
+<h4 id="公开密钥加密算法（RSA）"><a href="#公开密钥加密算法（RSA）" class="headerlink" title="公开密钥加密算法（RSA）"></a>公开密钥加密算法（RSA）</h4><p>也称为<strong>非对称加密，特点是存在一个公钥一个私钥，用公钥加密，用私钥解密</strong>。</p>
+<p>RSA的基本计算过程：</p>
+<ol>
+<li>选择两个素数p和q，实践中推荐选个大的。</li>
+<li>计算 n = p * q 和 z = (p - 1)*(q - 1)。</li>
+<li>找一个小于n的数值e，与z无公因数。</li>
+<li>求一个数d，使得 ed  mod z = 1。</li>
+<li>则公钥是一对数（n,e），私钥是一对数（n,d）。</li>
+<li>m为明文，则密文 c = m ^ e mod n。</li>
+<li>c为密文，则明文 m = c ^ d mod n。</li>
+</ol>
+<p>一个更具体的例子</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/BTreeNewBee/MyTestProject/blob/master/src/main/java/iguigui/github/io/ssltls/RSADemo.java">一个简单的RSA小Demo，JAVA实现</a></p>
+<p>RSA的安全性依赖于对公开的数字n的分解，中间人可以获取到你的公钥（n,e），想找到d就必须分解n，一般推荐长度大于2048位。</p>
+<p>有了非对称加密算法，就可以实现Alice给Bob发送一段公钥（这就是为什么叫公钥，公开的），Bob把想发送的内容进行公钥加密，回传给Alice，Alice再使用私钥解密。</p>
+<p>看上去非常美好？这还要对称加密干嘛对吧，不用困难地想办法安全交换密钥了就很舒服。</p>
+<p>实际上<strong>RSA的性能平均比DES低2-3个数量级</strong>，差个几倍可能还能拿机器顶一下，差几个数量级正常人都不会想全用RSA来进行通信。</p>
+<p>聪明的你肯定也想到了，拿RSA来交换密钥不就行了，交换完密钥后面用DES，性能也有了，安全性也有了——事实上SSL/TLS就是这么干的。</p>
+<h3 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h3><p>什么是散列函数呢？就是我们平时最常见的哈希。</p>
+<p>其特点有：</p>
+<ul>
+<li><strong>给定任意输入信息m，输出一个固定长度的信息是很简单的。</strong></li>
+<li><strong>在这种函数上，想找到两个不同的输入m，却具有相同输出是很困难的。</strong></li>
+<li><strong>无法从输出反推输入m，也称为单向性。</strong></li>
+<li><strong>雪崩效应：输入发生微小的改变也可能导致输出的巨大变化。</strong></li>
+</ul>
+<p><img src="/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/1200px-Avalanche_effect.svg.png" alt="雪崩效应"></p>
+<p>具体来讲，例如Java中的hashcode()方法，返回值是int，输入就是对象自己，输出就永远是4byte的一个定长信息。</p>
+<p>例如MD5，你可以对任何信息进行MD5运算，最后输出都是32byte。</p>
+<p><strong>再次强调一下，MD5不是加密，是散列</strong>。（我甚至看到有博客把MD5和SHA1叫做对称加密的！）</p>
+<p>由于散列函数的输入范围是无穷大，而输出范围固定，所以必然存在无穷多个输入拥有相同的输出（也就是哈希碰撞），一般来讲都是通过增大输出范围来提高碰撞难度。</p>
+<p>散列函数一般用于数据完整性鉴定，看了散列函数的特点想必不难理解。</p>
+<h2 id="SSL-TLS的简单实现"><a href="#SSL-TLS的简单实现" class="headerlink" title="SSL\TLS的简单实现"></a>SSL\TLS的简单实现</h2><p>接下来进入SSL\TLS的实现原理简述，因为整个SSL协议非常复杂，很难描述所有的细节过程，但是我尽量保证核心流程和功能描述完整。</p>
+<h4 id="前置准备工作"><a href="#前置准备工作" class="headerlink" title="前置准备工作"></a>前置准备工作</h4><ol>
+<li><p>服务商S向CA证书机构提交自己的公钥、域名等信息，申请认证，<strong>私钥自己藏好，绝对不能泄露</strong>！</p>
+</li>
+<li><p>CA机构将通过各种方式（线上如文件校验、DNS校验、邮件校验，线下如验证组织机构是否真实存在等等）验证申请者的真实性（验证级别越高、签发的证书越高级，费用越高，因为CA机构是要负责的）。</p>
+</li>
+<li><p>审核通过，CA机构将签发证书，证书包含以下内容：服务商S的公钥、服务商S的信息、证书相关信息等，最重要的是<strong>包含一个数字签名</strong>。</p>
+</li>
+<li><p>数字签名的产生方式：<strong>对明文信息按照规则组合，然后进行散列运算得到一个哈希值，再使用CA机构的私钥对哈希值进行加密，最终得到签名。</strong>此步确保了两件事情：服务商信息的完整性（通过散列实现）以及确保了这个信息是经过CA机构认证的（CA机构用自己的私钥加密，而这个私钥是被CA机构严格安全保护的，核心思想是，如果有一串信息，只能用这个CA机构的公钥解密，那么说明必定是这个CA机构用私钥加密出来的，也就可以证明这串信息必然是这个CA机构生成的，这就叫数字签名）。</p>
+</li>
+<li><p>服务商S拿到证书，<strong>连同自己的私钥</strong>，一起部署在服务器上。</p>
+</li>
+</ol>
+<h4 id="应用过程"><a href="#应用过程" class="headerlink" title="应用过程"></a>应用过程</h4><ol>
+<li><p>客户端C向服务器S发起请求，也可以称为CilentHello，包含SSL版本等信息。</p>
+</li>
+<li><p>服务器S返回SSL版本信息、随机数等，最重要的是返回了证书文件，<strong>客户端C使用对应CA机构的公钥对证书签名进行解密</strong>（CA机构的公钥都是广泛公开的，浏览器和操作系统会内置），这一步可能会需要层层向上验证，因为证书的签发机构可能并不是根CA，得到一个哈希值（也就是CA机构签发的时候算的哈希值）。这一步如果没有找到证书文件的公钥，则证书可能无效；如果证书文件记录的域名与你访问的不一致，则说明证书被冒用；这一步还需要进行证书是否被吊销的验证(CRL+OCSP验证)。</p>
+<p><img src="/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/news_2018101117.png" alt="证书与访问的域名不一致"></p>
+<p>证书与访问的域名不一致，证书可能被冒用</p>
+<p><img src="/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/news_2018101118.png" alt="没有找到CA机构的公钥无法验证信息是否真实有效"></p>
+<p>没有找到CA机构的公钥无法验证信息是否真实有效</p>
+</li>
+<li><p>客户端C同时对服务器S返回证书文件中的明文信息进行散列运算（就跟CA机构做的一样），得到一个哈希值。</p>
+</li>
+<li><p><strong>比较两个哈希值是否一致，即可确认明文信息是否未被篡改</strong>，换句话说也就可以确认服务器S的这份证书是经过了CA机构认证可信的，服务器S是真实可靠的。</p>
+</li>
+<li><p>客户端C与服务器S协商加密方式、随机数等信息。</p>
+</li>
+<li><p>客户端C使用证书中的公钥加密一个随机的<strong>对称密钥</strong>，返回给服务器S，服务器S使用自己的私钥进行解密，双方完成<strong>通信密钥交换</strong>。（这一步其实还有一个重要的<strong>鉴别密钥</strong>，用于给报文签名来防止篡改保证完整性）</p>
+</li>
+<li><p>接下来就是正常的业务数据交互了，双方将使用交换好的对称密钥和鉴别密钥确保通信中的完整性和机密性。    </p>
+<hr>
+</li>
+</ol>
+<p>重新回头去看我们要实现的目标：机密性、完整性、端点鉴别，机密性我们通过对称加密实现，而为了能约定出一个对称密钥，我们使用不对称加密来进行密钥交换；完整性我们通过数字签名 + 鉴别密钥实现；最后端点鉴别这一步，通过CA机构认证、加签，再用内置的CA机构公钥解密实现。</p>
+<h2 id="HTTPS带来了什么问题？"><a href="#HTTPS带来了什么问题？" class="headerlink" title="HTTPS带来了什么问题？"></a>HTTPS带来了什么问题？</h2><p>任何技术从来都不能只看他好而不去思考他的代价以及副作用，事实上几乎任何新技术都有自己的成本。</p>
+<h3 id="认证与部署成本"><a href="#认证与部署成本" class="headerlink" title="认证与部署成本"></a>认证与部署成本</h3><p>SSL\TLS的证书，认证、部署都需要时间精力，高级别的还要昂贵的认证费用，相比之前HTTP的成本，对于小公司小创业团队来讲这也是不可忽视的。</p>
+<p>当然现在也出现了免费的证书，为大家提供了一种选择。</p>
+<h3 id="首屏响应时长"><a href="#首屏响应时长" class="headerlink" title="首屏响应时长"></a>首屏响应时长</h3><p>HTTP只需要进行三次TCP握手即可完成连接，之后就是纯应用层的操作了，可以认为只需要一次RTT延迟。</p>
+<p>而HTTPS就不一样了，最极端的情况下会需要7次RTT延迟的时间才能进入应用层数据交互，包含HTTP 302转HTTPS、密钥交换等，更糟糕的是证书吊销检查这一步，还可能需要CA域名解析、CA域名握手、OCSP验证请求响应，这里就能吃掉3次RTT，如果CA机构的服务器带宽和链路质量不高，你的服务器带宽链路好也没用。强烈建议选择大厂的CA认证，选择靠近自己消费市场的CA机构，不要盲目选择机构。</p>
+<h3 id="服务器与客户端的性能和带宽消耗"><a href="#服务器与客户端的性能和带宽消耗" class="headerlink" title="服务器与客户端的性能和带宽消耗"></a>服务器与客户端的性能和带宽消耗</h3><p>RSA加密解密的性能消耗一直是系统的瓶颈，平均RSA都比DES慢2-3个数量级，就算是握手交换使用，计算压力也很大，经常需要增加部署多台机器进行负担。</p>
+<p>同时数据经过了加密，数据带宽占用也会增大。</p>
+<h3 id="私钥管理成本"><a href="#私钥管理成本" class="headerlink" title="私钥管理成本"></a>私钥管理成本</h3><p>由于需要高可用以及考虑到RSA的计算压力，运维需要把私钥和证书部署在大量机器上做负载均衡，而私钥是非常关键和重要的东西，泄露了就需要吊销证书、重新申请、重新部署，这就为管理运维带来了巨大的麻烦，以至于需要弄出一套专门的私钥管理工具。</p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://btreenewbee.github.io">我的龟龟</a>
+            <p>原文链接：<a href="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/">https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/</a>
+            <p>发表日期：<a href="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/">February 3rd 2021, 2:11:26 am</a>
+            <p>更新日期：<a href="https://btreenewbee.github.io/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/">February 11th 2022, 11:44:50 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2021/03/24/%E5%86%99%E4%B8%AA%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/" title= "写个测试文章">
+                    <div class="nextTitle">写个测试文章</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2021/02/03/%E5%A4%9A%E5%86%99%E7%82%B9%E5%B0%91%E5%86%99%E7%82%B9%E5%A4%9A%E5%B0%91%E5%86%99%E7%82%B9%20-%20%E5%89%AF%E6%9C%AC/" title= "我在写什么">
+                    <div class="prevTitle">我在写什么</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:atmzxl@163.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/BTreeNewBee" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTPS%E8%AF%95%E5%9B%BE%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">HTTPS试图解决什么问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E9%80%9A%E4%BF%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%89%B9%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">安全通信的基本特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%88%91%E4%BB%AC%E4%B8%89%E4%B8%AA%E7%9B%AE%E6%A0%87%E7%9A%84%E6%A0%B8%E5%BF%83%EF%BC%9A%E5%AF%86%E7%A0%81%E5%AD%A6"><span class="toc-number">3.</span> <span class="toc-text">实现我们三个目标的核心：密码学</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-number">3.1.</span> <span class="toc-text">对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Differ-Hellman%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2%E7%AE%97%E6%B3%95%E4%B8%8E%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.</span> <span class="toc-text">Differ-Hellman密钥交换算法与公开密钥加密算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Differ-Hellman%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.1.</span> <span class="toc-text">Differ-Hellman密钥交换算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%EF%BC%88RSA%EF%BC%89"><span class="toc-number">3.2.2.</span> <span class="toc-text">公开密钥加密算法（RSA）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0"><span class="toc-number">3.3.</span> <span class="toc-text">散列函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSL-TLS%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">SSL\TLS的简单实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">4.0.1.</span> <span class="toc-text">前置准备工作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">4.0.2.</span> <span class="toc-text">应用过程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTPS%E5%B8%A6%E6%9D%A5%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">HTTPS带来了什么问题？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E4%B8%8E%E9%83%A8%E7%BD%B2%E6%88%90%E6%9C%AC"><span class="toc-number">5.1.</span> <span class="toc-text">认证与部署成本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A6%96%E5%B1%8F%E5%93%8D%E5%BA%94%E6%97%B6%E9%95%BF"><span class="toc-number">5.2.</span> <span class="toc-text">首屏响应时长</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E6%80%A7%E8%83%BD%E5%92%8C%E5%B8%A6%E5%AE%BD%E6%B6%88%E8%80%97"><span class="toc-number">5.3.</span> <span class="toc-text">服务器与客户端的性能和带宽消耗</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%81%E9%92%A5%E7%AE%A1%E7%90%86%E6%88%90%E6%9C%AC"><span class="toc-number">5.4.</span> <span class="toc-text">私钥管理成本</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 8
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2022 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/03</span><a class="archive-post-title" href= "/2022/02/03/%E5%86%99%E4%B8%AA%E5%B8%A6%E5%9B%BE%E7%89%87%E7%9A%84/" >写个带图片的</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/03</span><a class="archive-post-title" href= "/2022/02/03/%E5%A4%9A%E5%86%99%E7%82%B9%E5%B0%91%E5%86%99%E7%82%B9%E5%A4%9A%E5%B0%91%E5%86%99%E7%82%B9/" >多写点少写点多少写点</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/04</span><a class="archive-post-title" href= "/2021/09/04/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/" >汇编笔记基本版</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/24</span><a class="archive-post-title" href= "/2021/03/24/%E5%86%99%E4%B8%AA%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/" >写个测试文章</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/03</span><a class="archive-post-title" href= "/2021/02/03/HTTPS%E4%B8%AD%E7%9A%84S%E6%84%8F%E5%91%B3%E7%9D%80%E4%BB%80%E4%B9%88/" >HTTPS中的S意味着什么?</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/03</span><a class="archive-post-title" href= "/2021/02/03/%E5%A4%9A%E5%86%99%E7%82%B9%E5%B0%91%E5%86%99%E7%82%B9%E5%A4%9A%E5%B0%91%E5%86%99%E7%82%B9%20-%20%E5%89%AF%E6%9C%AC/" >我在写什么</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/08</span><a class="archive-post-title" href= "/2021/01/08/%E6%88%91%E7%9A%84%E9%BE%9F%E9%BE%9F%E7%9A%84%E5%8D%9A%E5%AE%A2/" >我的龟龟的博客</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/08</span><a class="archive-post-title" href= "/2021/01/08/hello-world/" >Hello World</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="SSL\TLS"><span class="iconfont-archer">&#xe606;</span>SSL\TLS</span>
+    
+        <span class="sidebar-tag-name" data-tags="HTTPS"><span class="iconfont-archer">&#xe606;</span>HTTPS</span>
+    
+        <span class="sidebar-tag-name" data-tags="计算机网络"><span class="iconfont-archer">&#xe606;</span>计算机网络</span>
+    
+        <span class="sidebar-tag-name" data-tags="密码学"><span class="iconfont-archer">&#xe606;</span>密码学</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "我的龟龟"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
